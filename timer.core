@@ -1,0 +1,44 @@
+CAPI=2:
+
+name : secworks:util:timer:0
+
+filesets:
+  rtl:
+    files:
+      - src/rtl/timer.v
+      - src/rtl/timer_core.v
+    file_type : verilogSource
+
+  tb:
+    files:
+      - src/tb/tb_timer.v
+      - src/tb/tb_timer_core.v
+    file_type : verilogSource
+
+  openlane: {files : [data/sky130.tcl : {file_type : tclSource}]}
+
+targets:
+  default:
+    filesets: [rtl]
+
+  lint:
+    default_tool : verilator
+    filesets : [rtl]
+    tools:
+      verilator:
+        mode : lint-only
+    toplevel : timer
+
+  sky130:
+    default_tool: openlane
+    filesets: [rtl, openlane]
+    toplevel: timer
+
+  tb_timer: &tb
+    default_tool: icarus
+    filesets: [rtl, tb]
+    toplevel : tb_timer
+
+  tb_timer_core:
+    <<: *tb
+    toplevel : tb_timer_core
