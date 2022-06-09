@@ -65,6 +65,8 @@ module tb_timer_core();
   reg           tb_stop;
   reg  [31 : 0] tb_prescaler;
   reg  [31 : 0] tb_timer;
+  wire [31 : 0] tb_curr_prescaler;
+  wire [31 : 0] tb_curr_timer;
   wire          tb_ready;
 
 
@@ -78,6 +80,8 @@ module tb_timer_core();
 		 .timer_value(tb_timer),
 		 .start(tb_start),
 		 .stop(tb_stop),
+		 .curr_prescaler(tb_curr_prescaler),
+		 .curr_timer(tb_curr_timer),
 		 .ready(tb_ready)
                 );
 
