@@ -126,6 +126,27 @@ module tb_timer_core();
       $display("------------");
       $display("Cycle: %08d", cycle_ctr);
       $display("");
+      $display("Inputs and outputs:");
+      $display("start: 0x%1x, stop: 0x%1x, ready: 0x%1x",
+	       dut.start, dut.stop, dut.ready);
+      $display("prescaler_value: 0x%08x, timer_value: 0x%08x",
+	       dut.prescaler_value, dut.timer_value);
+      $display("");
+      $display("Internal state:");
+      $display("prescaler_reg: 0x%08x, prescaler_new: 0x%08x",
+	       dut.prescaler_reg, dut.prescaler_new);
+      $display("prescaler_set: 0x%1x, prescaler_dec: 0x%1x",
+	       dut.prescaler_set, dut.prescaler_dec);
+      $display("");
+      $display("timer_reg: 0x%08x, timer_new: 0x%08x",
+	       dut.timer_reg, dut.timer_new);
+      $display("timer_set: 0x%1x, timer_dec: 0x%1x",
+	       dut.timer_set, dut.timer_dec);
+      $display("");
+      $display("core_ctrl_reg: 0x%02x, core_ctrl_new: 0x%02x, core_ctrl_we: 0x%1x",
+	       dut.core_ctrl_reg, dut.core_ctrl_new, dut.core_ctrl_we);
+      $display("");
+      $display("");
     end
   endtask // dump_dut_state
 
@@ -147,26 +168,6 @@ module tb_timer_core();
       dump_dut_state();
     end
   endtask // reset_dut
-
-
-  //----------------------------------------------------------------
-  // display_test_result()
-  //
-  // Display the accumulated test results.
-  //----------------------------------------------------------------
-  task display_test_result;
-    begin
-      if (error_ctr == 0)
-        begin
-          $display("--- All %02d test cases completed successfully", tc_ctr);
-        end
-      else
-        begin
-          $display("--- %02d tests completed - %02d test cases did not complete successfully.",
-                   tc_ctr, error_ctr);
-        end
-    end
-  endtask // display_test_result
 
 
   //----------------------------------------------------------------
@@ -208,6 +209,11 @@ module tb_timer_core();
 
       tb_clk     = 0;
       tb_reset_n = 1;
+
+      tb_start     = 1'h0;
+      tb_stop      = 1'h0;
+      tb_prescaler = 32'h0;
+      tb_timer     = 32'h0;
     end
   endtask // init_sim
 
@@ -226,7 +232,13 @@ module tb_timer_core();
 
       $display("--- test1 started.");
       dump_dut_state();
-      #(10 * CLK_PERIOD);
+      tb_prescaler = 32'h6;
+      tb_timer     = 32'h9;
+      #(CLK_PERIOD);
+      tb_start = 1'h1;
+      #(CLK_PERIOD);
+      tb_start = 1'h0;
+      #(100 * CLK_PERIOD);
       tb_monitor = 0;
       #(CLK_PERIOD);
       $display("--- test1 completed.");
@@ -250,7 +262,6 @@ module tb_timer_core();
 
       test1();
 
-      display_test_result();
       $display("");
       $display("--- Simulation of timer core completed.");
       $finish;
