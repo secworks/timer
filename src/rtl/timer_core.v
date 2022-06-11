@@ -141,7 +141,7 @@ module timer_core(
 	prescaler_we  = 1'h1;
       end
       else if (prescaler_dec) begin
-	prescaler_new = prescaler_new - 1'h1;
+	prescaler_new = prescaler_reg - 1'h1;
 	prescaler_we  = 1'h1;
       end
     end
@@ -160,7 +160,7 @@ module timer_core(
 	timer_we  = 1'h1;
       end
       else if (timer_dec) begin
-	timer_new = timer_new - 1'h1;
+	timer_new = timer_reg - 1'h1;
 	timer_we  = 1'h1;
       end
     end
@@ -224,6 +224,8 @@ module timer_core(
 	    else begin
 	      prescaler_set = 1'h1;
 	      timer_dec     = 1'h1;
+              core_ctrl_new = CTRL_PRESCALER;
+              core_ctrl_we  = 1'h1;
 	    end
 	  end
 	end
