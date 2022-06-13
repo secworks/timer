@@ -239,8 +239,8 @@ module tb_timer_core();
       #(CLK_PERIOD);
       tb_start = 1'h0;
       wait_ready();
-      tb_monitor = 0;
       #(CLK_PERIOD);
+      tb_monitor = 0;
       $display("--- test1 completed.");
       $display("");
     end
